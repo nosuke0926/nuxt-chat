@@ -18,3 +18,25 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+---
+
+## Firestore Test
+
+- Firestore のエミュレータを起動する
+
+```
+$ firebase emulators:start --only firestore
+```
+
+- テストを実行
+
+```
+$ npm run test
+```
+
+- セキュリティルールを反映
+
+```
+$ firebase deploy --only firestore
+```
