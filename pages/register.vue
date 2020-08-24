@@ -16,9 +16,7 @@
             />
           </template>
           <template v-else>
-            <i class="material-icons text-7xl text-gray" @click="selectImage">
-              person
-            </i>
+            <i class="material-icons text-7xl text-gray" @click="selectImage">person</i>
           </template>
           <input
             type="file"
@@ -28,15 +26,13 @@
             @change="onSelectFile"
           />
         </div>
-        <span v-show="form.imageUrl.errorMessage" class="text-red text-sm">{{
+        <span v-show="form.imageUrl.errorMessage" class="text-red text-sm">
+          {{
           form.imageUrl.errorMessage
-        }}</span>
+          }}
+        </span>
       </div>
-      <label
-        class="block mt-8 mb-2 ml-2 uppercase tracking-wide text-darkGray text-sm"
-      >
-        名前
-      </label>
+      <label class="block mt-8 mb-2 ml-2 uppercase tracking-wide text-darkGray text-sm">名前</label>
       <div class="h-20 mb-6">
         <input
           v-model="form.name.val"
@@ -45,17 +41,16 @@
           class="block w-full py-3 px-4 appearance-none bg-gray-200 text-darkGray border rounded leading-tight focus:outline-none focus:bg-white"
           @blur="validateName"
         />
-        <span v-show="form.name.errorMessage" class="text-red text-sm">{{
+        <span v-show="form.name.errorMessage" class="text-red text-sm">
+          {{
           form.name.errorMessage
-        }}</span>
+          }}
+        </span>
       </div>
       <div class="flex">
         <button
-          class="w-full p-3 gradation rounded-full text-white 
-          focus:outline-none focus:shadow-outline"
-        >
-          登録
-        </button>
+          class="w-full p-3 gradation rounded-full text-white focus:outline-none focus:shadow-outline"
+        >登録</button>
       </div>
     </form>
   </div>
@@ -65,6 +60,7 @@
 import { mapMutations } from "vuex";
 
 export default {
+  middleware: ["checkRegister"],
   // dataプロパティ←画面の状態を保存しておく場所。dataの中身の状態に変更が発生すると、画面の表示もdataの変更に合わせて変わる
   data() {
     return {
@@ -72,20 +68,20 @@ export default {
         name: {
           label: "名前",
           val: null,
-          errorMessage: null
+          errorMessage: null,
         },
         imageUrl: {
           label: "アイコン画像",
           val: null,
-          errorMessage: null
-        }
-      }
+          errorMessage: null,
+        },
+      },
     };
   },
   computed: {
     isValidateError() {
       return this.form.name.errorMessage || this.form.imageUrl.errorMessage;
-    }
+    },
   },
   methods: {
     ...mapMutations("alert", ["setMessage"]),
@@ -103,7 +99,7 @@ export default {
 
       reader.addEventListener("load", () => {
         this.upload({
-          localImageFile: files[0]
+          localImageFile: files[0],
         });
       });
     },
@@ -162,19 +158,16 @@ export default {
       if (this.isValidateError) return;
 
       try {
-        await this.$firestore
-          .collection("users")
-          .doc(user.uid)
-          .set({
-            name: this.form.name.val,
-            iconImageUrl: this.form.imageUrl.val
-          });
+        await this.$firestore.collection("users").doc(user.uid).set({
+          name: this.form.name.val,
+          iconImageUrl: this.form.imageUrl.val,
+        });
         this.$router.push("/");
       } catch (e) {
         console.log(e);
         this.setMessage({ message: "登録に失敗しました" });
       }
-    }
-  }
+    },
+  },
 };
 </script>
