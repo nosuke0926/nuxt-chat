@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   // dataプロパティ←画面の状態を保存しておく場所。dataの中身の状態に変更が発生すると、画面の表示もdataの変更に合わせて変わる
   data() {
@@ -86,6 +88,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations("alert", ["setMessage"]),
     // inputにref="image"を指定することで、this.$refs.属性名 で指定したDOM要素にアクセスが可能。
     // 今回はinputタグに対してclickイベントを発火させている
     selectImage() {
@@ -169,6 +172,7 @@ export default {
         this.$router.push("/");
       } catch (e) {
         console.log(e);
+        this.setMessage({ message: "登録に失敗しました" });
       }
     }
   }
