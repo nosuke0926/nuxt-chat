@@ -40,3 +40,17 @@ $ npm run test
 ```
 $ firebase deploy --only firestore
 ```
+
+## Build
+
+- Nuxt アプリケーションをビルドする
+
+```
+$ npm run build
+```
+
+- Firebase Hosting にアップロード
+
+```
+$ firebase deploy
+```
