@@ -199,4 +199,125 @@ describe(testName, () => {
       });
     });
   });
+
+  describe('chats collectionのテスト', () => {
+    // テストを実行する前に毎回roomを作成(chatはroom配下にあるため、roomのデータが先に登録されている必要がある)
+    beforeEach(async () => {
+      const db = authDB({
+        uid: 'tech-user'
+      })
+      await firebase.assertSucceeds(
+        db.collection('rooms').doc('tech-room').set({
+          name: '〇〇について話す部屋です',
+          topImageUrl: 'https://example.com',
+          createdAt: new Date()
+        })
+      )
+    })
+
+    describe('read', async () => {
+      test('未ログインの場合、chatデータ取得に失敗するか', async () => {
+        const db = noAuthDB()
+        await firebase.assertFails(
+          db.collection('rooms').doc('tech-room').collection('chats').get()
+        )
+      })
+      test('ログイン済みの場合、chatデータ取得できるか', async () => {
+        const db = authDB({
+          uid: 'tech-user'
+        })
+        await firebase.assertSucceeds(
+          db.collection('rooms').doc('tech-room').collection('chats').get()
+        )
+      })
+    })
+
+    describe('create', () => {
+      test('chatのデータを作成できるか', async () => {
+        const db = authDB({
+          uid: 'tech-user'
+        })
+        await firebase.assertSucceeds(
+          db.collection('rooms').doc('tech-room').collection('chats').add({
+            userId: 'tech-user',
+            name: 'testUser',
+            iconImageUrl: 'https://example.com',
+            body: 'こんにちは',
+            createdAt: new Date(),
+          })
+        )
+      })
+      test('userIdが自分以外の場合、作成に失敗するか', async () => {
+        const db = authDB({
+          uid: 'tech-user'
+        })
+        await firebase.assertFails(
+          db.collection('rooms').doc('tech-room').collection('chats').add({
+            userId: 'tech-user2',
+            name: 'testUser',
+            iconImageUrl: 'https://example.com',
+            body: 'こんにちは',
+            createdAt: new Date(),
+          })
+        )
+      })
+      test('nameが未入力の場合、作成に失敗するか', async () => {
+        const db = authDB({
+          uid: 'tech-user'
+        })
+        await firebase.assertFails(
+          db.collection('rooms').doc('tech-room').collection('chats').add({
+            userId: 'tech-user',
+            name: '',
+            iconImageUrl: 'https://example.com',
+            body: 'こんにちは',
+            createdAt: new Date(),
+          })
+        )
+      })
+      test('iconImageUrlが未入力の場合、作成に失敗するか', async () => {
+        const db = authDB({
+          uid: 'tech-user'
+        })
+        await firebase.assertFails(
+          db.collection('rooms').doc('tech-room').collection('chats').add({
+            userId: 'tech-user',
+            name: 'testUser',
+            iconImageUrl: '',
+            body: 'こんにちは',
+            createdAt: new Date(),
+          })
+        )
+      })
+      test('bodyが未入力の場合、作成に失敗するか', async () => {
+        const db = authDB({
+          uid: 'tech-user'
+        })
+        await firebase.assertFails(
+          db.collection('rooms').doc('tech-room').collection('chats').add({
+            userId: 'tech-user',
+            name: 'testUser',
+            iconImageUrl: 'https://example.com',
+            body: '',
+            createdAt: new Date(),
+          })
+        )
+      })
+      test('createdAtが未入力の場合、作成に失敗するか', async () => {
+        const db = authDB({
+          uid: 'tech-user'
+        })
+        await firebase.assertFails(
+          db.collection('rooms').doc('tech-room').collection('chats').add({
+            userId: 'tech-user',
+            name: 'testUser',
+            iconImageUrl: 'https://example.com',
+            body: 'こんにちは',
+            createdAt: '',
+          })
+        )
+      })
+    })
+  })
+
 });
