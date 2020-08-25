@@ -107,6 +107,7 @@ export default {
       const storageRef = this.$fireStorage.ref();
 
       // ファイルのパスを設定
+      // @todo フィル名をユニークにする
       const imageRef = storageRef.child(
         `images/${user.uid}/rooms/${localImageFile.name}`
       );
